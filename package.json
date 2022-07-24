@@ -1,5 +1,5 @@
 {
-  "name": "tmdb-api",
+  "name": "css-hub-api",
   "version": "1.0.0",
   "description": "The Movie Database API Wrapper",
   "main": "server.js",
