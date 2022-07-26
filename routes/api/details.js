@@ -39,8 +39,8 @@ router.get('/', (req, res) => {
       const { data } = response;
       res.send({ results: data });
     })
-    .catch((errors) => {
-      res.send({ errors: { message: 'Issues Fetching results' } });
+    .catch((err) => {
+      res.send({ errors: { message: 'Issues Fetching results', err } });
     });
 });
 
@@ -61,8 +61,8 @@ router.get('/media_ratings', (req, res) => {
       const { data } = response;
       res.send({ results: data });
     })
-    .catch((errors) => {
-      res.send({ errors: { message: 'Issues Fetching results', errors } });
+    .catch((err) => {
+      res.send({ errors: { message: 'Issues Fetching results', err } });
     });
 });
 

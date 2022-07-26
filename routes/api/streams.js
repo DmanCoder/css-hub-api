@@ -50,7 +50,7 @@ router.get('/', (req, res) => {
     )
     .catch((err) => {
       res.status(500);
-      res.send({ errors: { message: 'Issues Fetching results' } });
+      res.send({ errors: { message: 'Issues Fetching results', err } });
     });
 });
 

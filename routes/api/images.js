@@ -74,8 +74,8 @@ router.get('/tv/seasons/episode_images', (req, res) => {
           res.send({ errors: { message: 'Issues Fetching results', error } });
         });
     })
-    .catch((error) => {
-      res.send({ errors: { message: 'Issues Fetching results', error } });
+    .catch((err) => {
+      res.send({ errors: { message: 'Issues Fetching results', err } });
     });
 });
 

@@ -106,8 +106,8 @@ router.get('/', (req, res) => {
         })
       );
     })
-    .catch((errors) => {
-      res.send({ errors: { message: 'Issues Fetching results' } });
+    .catch((err) => {
+      res.send({ errors: { message: 'Issues Fetching results', err } });
     });
 });
 
