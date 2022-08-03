@@ -9,7 +9,7 @@ const validatePopularStreams = require('../../validations/popular/streams');
 
 router.get('/', (req, res) => {
   const queryObject = url.parse(req.url, true).query;
-  const { network_id, language, page } = queryObject;
+  const { selected_country, network_id, language, page } = queryObject;
 
   const { errors, isValid } = validatePopularStreams(queryObject);
   if (!isValid) {
@@ -20,8 +20,8 @@ router.get('/', (req, res) => {
   let networkIdParam = `&with_networks=${network_id}`;
   if (network_id === '-1') networkIdParam = '';
 
-  const moviesEndpoint = `/discover/movie?api_key=${process.env.THE_MOVIE_DATABASE_API}&watch_region=US&with_watch_monetization_types=flatrate&with_origin_country=US${networkIdParam}&language=${language}&page=${page}`;
-  const tvShowsEndpoint = `/discover/tv?api_key=${process.env.THE_MOVIE_DATABASE_API}&watch_region=US&with_watch_monetization_types=flatrate&with_origin_country=US${networkIdParam}&language=${language}&page=${page}`;
+  const moviesEndpoint = `/discover/movie?api_key=${process.env.THE_MOVIE_DATABASE_API}&watch_region=${selected_country}&with_watch_monetization_types=flatrate&with_origin_country=${selected_country}${networkIdParam}&language=${language}&page=${page}`;
+  const tvShowsEndpoint = `/discover/tv?api_key=${process.env.THE_MOVIE_DATABASE_API}&watch_region=${selected_country}&with_watch_monetization_types=flatrate&with_origin_country=${selected_country}${networkIdParam}&language=${language}&page=${page}`;
 
   const moviesApiRequest = dbAPI.get(moviesEndpoint);
   const tvShowsRequest = dbAPI.get(tvShowsEndpoint);
