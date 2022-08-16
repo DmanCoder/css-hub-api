@@ -26,7 +26,7 @@ const validatePopularTv = require('../../validations/popular/tv');
 router.get('/', (req, res) => {
   // Expected params
   const queryObject = url.parse(req.url, true).query;
-  const { language, page } = queryObject;
+  const { selected_country, network_id, language, page } = queryObject;
 
   // Reject if expected params are not present
   const { errors, isValid } = validatePopularTv(queryObject);
@@ -36,75 +36,14 @@ router.get('/', (req, res) => {
   }
 
   // Get popular tv shows
-  const epTv = `/tv/popular?api_key=${process.env.THE_MOVIE_DATABASE_API}&watch_region=US&language=${language}&page=${page}`;
+  const epTv = `/tv/popular?api_key=${process.env.THE_MOVIE_DATABASE_API}&watch_region=${selected_country}=&language=${language}&page=${page}`;
   dbAPI
     .get(epTv)
     .then((response) => {
       const { data } = response;
-      const { page, results } = data;
-      const multiReq = []; // [[request], [request], [request]] Store array of axios instances
+      const { results } = data;
 
-      /*
-       * Loop through each item in `results` and
-       * store axios
-       */
-      results.map((item, index) => {
-        // Endpoints
-        const epDetails = `/tv/${item.id}?api_key=${process.env.THE_MOVIE_DATABASE_API}&languages=${language}&pages=${page}`;
-        const epVideos = `/tv/${item.id}/videos?api_key=${process.env.THE_MOVIE_DATABASE_API}&languages=${language}&pages=${page}`;
-        const epRecommendations = `/tv/${item.id}/recommendations?api_key=${process.env.THE_MOVIE_DATABASE_API}&languages=${language}&pages=${page}`;
-
-        multiReq.push(
-          axios.all([
-            dbAPI.get(epDetails),
-            dbAPI.get(epVideos),
-            dbAPI.get(epRecommendations),
-          ])
-        );
-      });
-
-      axios.all(multiReq).then(
-        axios.spread((...allRes) => {
-          /* `allRes` contains array inside an array that contains object
-              The Objects are as follows in line 51 as above ^^ 
-            [
-              [
-                {
-                  status: 200,
-                  statusText: 'OK',
-                  headers: [Object],
-                  config: [Object],
-                  request: [ClientRequest],
-                  data: [Object],
-                },
-                {
-                  status: 200,
-                  statusText: 'OK',
-                  headers: [Object],
-                  config: [Object],
-                  request: [ClientRequest],
-                  data: [Object],
-                },
-              ],
-            ]
-          */
-
-          // Extracting data and insert to `results`
-          allRes.map((item, index) => {
-            const detailsResults = item[0].data;
-            const videosResults = item[1].data;
-            const recommendationsResults = item[2].data;
-
-            // Insert fetched data to `results`
-            results[index].media_details = detailsResults;
-            results[index].media_videos = videosResults;
-            results[index].media_recommendations =
-              recommendationsResults.results;
-          });
-
-          res.send({ results });
-        })
-      );
+      return res.send({ results });
     })
     .catch((err) => {
       res.send({ errors: { message: 'Issues Fetching results', err } });
