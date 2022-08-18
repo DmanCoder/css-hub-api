@@ -20,26 +20,20 @@ router.get('/', (req, res) => {
   let networkIdParam = `&with_networks=${network_id}`;
   if (network_id === '-1') networkIdParam = '';
 
-  const moviesEndpoint = `/movie/upcoming?api_key=${process.env.THE_MOVIE_DATABASE_API}&language=${language}&page=${page}`;
-  const tvShowsEndpoint = `/tv/latest?api_key=${process.env.THE_MOVIE_DATABASE_API}&language=${language}&page=${page}`;
+  const moviesEndpoint = `/movie/upcoming?api_key=${process.env.THE_MOVIE_DATABASE_API}&watch_region=${selected_country}&with_watch_monetization_types=flatrate&with_origin_country=${selected_country}${networkIdParam}&language=${language}&page=${page}`;
 
-  const moviesApiRequest = dbAPI.get(moviesEndpoint);
-  const tvShowsRequest = dbAPI.get(tvShowsEndpoint);
+  dbAPI
+    .get(moviesEndpoint)
+    .then((response) => {
+      const { data } = response;
 
-  axios
-    .all([moviesApiRequest, tvShowsRequest])
-    .then(
-      axios.spread((...responses) => {
-        const [movies, tvShows] = responses;
+      const moviesWithAddedMediaType = data.results.map((movie) => ({
+        ...movie,
+        appended_media_type: 'movie',
+      }));
 
-        const moviesWithAddedMediaType = movies.data.results.map((movie) => ({
-          ...movie,
-          appended_media_type: 'movie',
-        }));
-
-        return res.send({ results: moviesWithAddedMediaType });
-      })
-    )
+      return res.send({ results: moviesWithAddedMediaType });
+    })
     .catch((err) => {
       res.status(500);
       res.send({ errors: { message: 'Issues Fetching results TEST', err } });
