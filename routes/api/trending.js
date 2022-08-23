@@ -34,12 +34,12 @@ router.get('/', (req, res) => {
 
         const moviesWithAddedMediaType = movie.data.results.map((movie) => ({
           ...movie,
-          appended_media_type: 'movie',
+          media_type: 'movie',
         }));
 
         const tvShowsWithAddedMediaType = tvShow.data.results.map((tv) => ({
           ...tv,
-          appended_media_type: 'tv',
+          media_type: 'tv',
         }));
 
         const combinedMedias = [...tvShowsWithAddedMediaType, ...moviesWithAddedMediaType];

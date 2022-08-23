@@ -15,7 +15,7 @@ const validateMediaDetails = require('../../validations/validateMediaDetails');
 router.get('/', (req, res) => {
   // Expected params
   const queryObject = url.parse(req.url, true).query;
-  const { language, page, media_id, appended_media_type } = queryObject;
+  const { language, page, media_id, media_type } = queryObject;
 
   // Reject if expected params are not present
   const { errors, isValid } = validateMediaDetails(queryObject);
@@ -25,14 +25,14 @@ router.get('/', (req, res) => {
   }
 
   let appendedToResponseParams = '';
-  if (appended_media_type === 'tv') {
+  if (media_type === 'tv') {
     appendedToResponseParams = '&append_to_response=content_ratings';
-  } else if (appended_media_type === 'movie') {
+  } else if (media_type === 'movie') {
     appendedToResponseParams = '&append_to_response=release_dates';
   }
 
   // Get popular tv shows
-  const mediaDetailsEndpoint = `/${appended_media_type}/${media_id}?api_key=${process.env.THE_MOVIE_DATABASE_API}${appendedToResponseParams}&languages=${language}&pages=${page}`;
+  const mediaDetailsEndpoint = `/${media_type}/${media_id}?api_key=${process.env.THE_MOVIE_DATABASE_API}${appendedToResponseParams}&languages=${language}&pages=${page}`;
   dbAPI
     .get(mediaDetailsEndpoint)
     .then((response) => {
@@ -46,7 +46,7 @@ router.get('/', (req, res) => {
 
 router.get('/media_ratings', (req, res) => {
   const queryObject = url.parse(req.url, true).query;
-  const { appended_media_type, media_id, language, page } = queryObject;
+  const { media_type, media_id, language, page } = queryObject;
 
   const { errors, isValid } = validateMediaDetails(queryObject);
   if (!isValid) {
@@ -54,7 +54,7 @@ router.get('/media_ratings', (req, res) => {
     return res.send({ errors });
   }
 
-  const mediaDetailsEndpoint = `/${appended_media_type}/${media_id}/content_ratings?api_key=${process.env.THE_MOVIE_DATABASE_API}&languages=${language}&pages=${page}`;
+  const mediaDetailsEndpoint = `/${media_type}/${media_id}/content_ratings?api_key=${process.env.THE_MOVIE_DATABASE_API}&languages=${language}&pages=${page}`;
   dbAPI
     .get(mediaDetailsEndpoint)
     .then((response) => {

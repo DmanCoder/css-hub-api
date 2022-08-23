@@ -18,6 +18,7 @@ app.use('/api/images', require('./routes/api/images'));
 app.use('/api/details', require('./routes/api/details'));
 app.use('/api/trending', require('./routes/api/trending'));
 app.use('/api/upcoming', require('./routes/api/upcoming'));
+app.use('/api/genre', require('./routes/api/genre'));
 
 const PORT = process.env.PORT || 5000;
 
