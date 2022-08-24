@@ -4,6 +4,7 @@ const router = express.Router();
 const url = require('url');
 
 const { dbAPI, axios } = require('../../api/init');
+const generateParams = require('../../utils/generateParams');
 
 // Utilities
 const shuffle = require('../../utils/shuffle');
@@ -19,9 +20,8 @@ const validateDiscover = require('../../validations/validateDiscover');
  * @access    Public
  */
 router.get('/', (req, res) => {
-  // Expected params
+  // Params
   const queryObject = url.parse(req.url, true).query;
-  const { selected_country, network_id, language, page } = queryObject;
 
   // Reject if expected params are not present
   const { errors, isValid } = validateDiscover(queryObject);
@@ -30,10 +30,12 @@ router.get('/', (req, res) => {
     return res.send({ errors });
   }
 
+  // Convert params from client to parma string
+  const params = generateParams(queryObject);
+
   // Movie
-  //   &language=en-US&page=1&with_genres=16&with_keywords=210024|287501&with_text_query=death&language=${language}&page=${page}
-  const moviesEndpoint = `/discover/movie?api_key=${process.env.THE_MOVIE_DATABASE_API}`;
-  const tvEndpoint = `/discover/tv?api_key=${process.env.THE_MOVIE_DATABASE_API}`;
+  const moviesEndpoint = `/discover/movie?api_key=${process.env.THE_MOVIE_DATABASE_API}&${params}`;
+  const tvEndpoint = `/discover/tv?api_key=${process.env.THE_MOVIE_DATABASE_API}&${params}`;
 
   const movieApi = dbAPI.get(moviesEndpoint);
   const tvApi = dbAPI.get(tvEndpoint);
