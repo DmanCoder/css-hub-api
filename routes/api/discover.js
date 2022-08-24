@@ -1,13 +1,13 @@
 const express = require('express');
+const url = require('url');
 const router = express.Router();
 
-const url = require('url');
-
+// API instance
 const { dbAPI, axios } = require('../../api/init');
-const generateParams = require('../../utils/generateParams');
 
 // Utilities
 const shuffle = require('../../utils/shuffle');
+const generateParams = require('../../utils/generateParams');
 
 // Validators
 const validateDiscover = require('../../validations/validateDiscover');
