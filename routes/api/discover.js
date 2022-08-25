@@ -46,7 +46,18 @@ router.get('/', (req, res) => {
       axios.spread((...responses) => {
         const [movie, tv] = responses; // Destructure
 
-        const combinedMedias = [...movie?.data?.results, ...tv?.data?.results];
+        // Append media type 
+        const moviesWithAddedMediaType = movie.data.results.map((movie) => ({
+          ...movie,
+          appended_media_type: 'movie',
+        }));
+
+        const tvShowsWithAddedMediaType = tv.data.results.map((tv) => ({
+          ...tv,
+          appended_media_type: 'tv',
+        }));
+
+        const combinedMedias = [...moviesWithAddedMediaType, ...tvShowsWithAddedMediaType];
         const shuffledMedias = shuffle({ array: combinedMedias });
 
         return res.send({ results: shuffledMedias });
