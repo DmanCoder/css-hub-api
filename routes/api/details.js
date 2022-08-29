@@ -1,4 +1,4 @@
-const { dbAPI, axios } = require('../../api/init');
+const { dbAPI } = require('../../api/init');
 const express = require('express');
 const url = require('url');
 // TODO: https://www.themoviedb.org/talk/6002a239223e20003fb6e10b
@@ -31,7 +31,7 @@ router.get('/', (req, res) => {
     appendedToResponseParams = '&append_to_response=release_dates';
   }
 
-  // Get popular tv shows
+  // Get media details
   const mediaDetailsEndpoint = `/${media_type}/${media_id}?api_key=${process.env.THE_MOVIE_DATABASE_API}${appendedToResponseParams}&languages=${language}&pages=${page}`;
   dbAPI
     .get(mediaDetailsEndpoint)
