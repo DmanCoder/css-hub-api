@@ -37,7 +37,7 @@ router.get('/', (req, res) => {
     .get(mediaDetailsEndpoint)
     .then((response) => {
       const { data } = response;
-      res.send({ results: data });
+      res.send({ results: { ...data, appended_media_type: media_type } });
     })
     .catch((err) => {
       res.send({ errors: { message: 'Issues Fetching results', err } });
