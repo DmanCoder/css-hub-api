@@ -33,6 +33,14 @@ router.get('/', (req, res) => {
   // Convert params from client to parma string
   const params = generateParams(queryObject);
 
+  if (params?.media_type === 'tv' || params?.media_type === 'movie') {
+    fetchSingularMediaType({ req, res, params });
+  } else {
+    fetchBothMediaType({ req, res, params });
+  }
+});
+
+const fetchBothMediaType = ({ req, res, params }) => {
   // Movie
   const moviesEndpoint = `/discover/movie?api_key=${process.env.THE_MOVIE_DATABASE_API}&${params}`;
   const tvEndpoint = `/discover/tv?api_key=${process.env.THE_MOVIE_DATABASE_API}&${params}`;
@@ -46,7 +54,7 @@ router.get('/', (req, res) => {
       axios.spread((...responses) => {
         const [movie, tv] = responses; // Destructure
 
-        // Append media type 
+        // Append media type
         const moviesWithAddedMediaType = movie.data.results.map((movie) => ({
           ...movie,
           appended_media_type: 'movie',
@@ -67,6 +75,28 @@ router.get('/', (req, res) => {
       res.status(500);
       res.send({ errors: { message: 'Issues Fetching results', err } });
     });
-});
+};
+
+const fetchSingularMediaType = ({ req, res, params }) => {
+  const moviesEndpoint = `/discover/${params?.media_type}?api_key=${process.env.THE_MOVIE_DATABASE_API}&${params}`;
+
+  dbAPI
+    .get(moviesEndpoint)
+    .then((res) => {
+      const tvShowsWithAddedMediaType = res.data.results.map((media) => ({
+        ...media,
+        appended_media_type: params?.media_type,
+      }));
+
+      const combinedMedias = [...moviesWithAddedMediaType, ...tvShowsWithAddedMediaType];
+
+      const shuffledMedias = shuffle({ array: combinedMedias });
+
+      return res.send({ results: shuffledMedias });
+    })
+    .catch((err) => {
+      return res.send({ results: [], err });
+    });
+};
 
 module.exports = router;
