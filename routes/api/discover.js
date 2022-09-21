@@ -19,29 +19,30 @@ const validateDiscover = require('../../validations/validateDiscover');
  * @param     {req, res} - Request & Response
  * @access    Public
  */
-router.get('/', (req, res) => {
+router.get('/', (request, response) => {
   // Params
-  const queryObject = url.parse(req.url, true).query;
+  const queryObject = url.parse(request.url, true).query;
 
   // Reject if expected params are not present
   const { errors, isValid } = validateDiscover(queryObject);
   if (!isValid) {
-    res.status(400);
-    return res.send({ errors });
+    response.status(400);
+    return response.send({ errors });
   }
 
   // Convert params from client to parma string
   const params = generateParams(queryObject);
 
-  if (params?.media_type === 'tv' || params?.media_type === 'movie') {
-    fetchSingularMediaType({ req, res, params });
+  if (queryObject?.media_type === 'tv' || queryObject?.media_type === 'movie') {
+    console.log('SINGLE IS YVB OR ...');
+    fetchSingularMediaType({ request, response, params, queryObject });
   } else {
-    fetchBothMediaType({ req, res, params });
+    console.log('BOTH IS RUNNING...');
+    fetchBothMediaType({ request, response, params });
   }
 });
 
-const fetchBothMediaType = ({ req, res, params }) => {
-  // Movie
+const fetchBothMediaType = ({ request, response, params }) => {
   const moviesEndpoint = `/discover/movie?api_key=${process.env.THE_MOVIE_DATABASE_API}&${params}`;
   const tvEndpoint = `/discover/tv?api_key=${process.env.THE_MOVIE_DATABASE_API}&${params}`;
 
@@ -51,8 +52,8 @@ const fetchBothMediaType = ({ req, res, params }) => {
   axios
     .all([movieApi, tvApi])
     .then(
-      axios.spread((...responses) => {
-        const [movie, tv] = responses; // Destructure
+      axios.spread((...res) => {
+        const [movie, tv] = res; // Destructure
 
         // Append media type
         const moviesWithAddedMediaType = movie.data.results.map((movie) => ({
@@ -68,34 +69,35 @@ const fetchBothMediaType = ({ req, res, params }) => {
         const combinedMedias = [...moviesWithAddedMediaType, ...tvShowsWithAddedMediaType];
         const shuffledMedias = shuffle({ array: combinedMedias });
 
-        return res.send({ results: shuffledMedias });
+        return response.send({ results: shuffledMedias });
       })
     )
     .catch((err) => {
-      res.status(500);
-      res.send({ errors: { message: 'Issues Fetching results', err } });
+      response.status(500);
+      response.send({ errors: { message: 'Issues Fetching results', err } });
     });
 };
 
-const fetchSingularMediaType = ({ req, res, params }) => {
-  const moviesEndpoint = `/discover/${params?.media_type}?api_key=${process.env.THE_MOVIE_DATABASE_API}&${params}`;
+const fetchSingularMediaType = ({ request, response, params, queryObject }) => {
+  const moviesEndpoint = `/discover/${queryObject?.media_type}?api_key=${process.env.THE_MOVIE_DATABASE_API}&${params}`;
 
   dbAPI
     .get(moviesEndpoint)
     .then((res) => {
       const tvShowsWithAddedMediaType = res.data.results.map((media) => ({
         ...media,
-        appended_media_type: params?.media_type,
+        appended_media_type: queryObject?.media_type,
       }));
 
-      const combinedMedias = [...moviesWithAddedMediaType, ...tvShowsWithAddedMediaType];
+      const combinedMedias = [...tvShowsWithAddedMediaType];
 
       const shuffledMedias = shuffle({ array: combinedMedias });
 
-      return res.send({ results: shuffledMedias });
+      return response.send({ results: shuffledMedias });
     })
     .catch((err) => {
-      return res.send({ results: [], err });
+      response.status(500);
+      response.send({ errors: { message: 'Issues Fetching results', err } });
     });
 };
 
