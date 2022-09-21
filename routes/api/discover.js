@@ -34,10 +34,8 @@ router.get('/', (request, response) => {
   const params = generateParams(queryObject);
 
   if (queryObject?.media_type === 'tv' || queryObject?.media_type === 'movie') {
-    console.log('SINGLE IS YVB OR ...');
     fetchSingularMediaType({ request, response, params, queryObject });
   } else {
-    console.log('BOTH IS RUNNING...');
     fetchBothMediaType({ request, response, params });
   }
 });
