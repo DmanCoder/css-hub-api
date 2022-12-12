@@ -1,30 +1,42 @@
 {
   "name": "css-hub-api",
   "version": "1.0.0",
-  "description": "This is a API pass through",
-  "main": "server.js",
+  "description": "The Movie Data Base API Pass Through",
+  "license": "MIT",
+  "main": "dist/src/index.js",
   "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/src/index.js",
+    "dev": "ts-node-dev --watch .env, src src/index.ts",
+    "test": "cross-env NODE_ENV=test jest",
+    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "lint": "npx eslint src",
+    "reinstall": "rm -rf node_modules && npm install"
+  },
   "dependencies": {
-    "axios": "^0.27.2",
-    "express": "^4.18.2"
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "helmet": "^5.1.0",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.14",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/jest": "^28.1.6",
+    "@types/morgan": "^1.9.3",
+    "@types/node": "^18.0.6",
+    "@types/supertest": "^2.0.12",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.20.0",
+    "jest": "^28.1.3",
+    "supertest": "^6.2.4",
+    "ts-jest": "^28.0.7",
+    "ts-node": "^10.9.1", 
+    "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.4"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DmanCoder/css-hub-api.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/DmanCoder/css-hub-api/issues"
-  },
-  "homepage": "https://github.com/DmanCoder/css-hub-api#readme"
+  }
 }
