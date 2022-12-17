@@ -1,6 +1,7 @@
-import { RequestHandler } from 'express';
-
+import express from 'express';
 import url from 'url';
+
+const router = express.Router();
 
 /**
  * @dec       This API makes a request to TMDb API and returns the request
@@ -9,9 +10,9 @@ import url from 'url';
  * @param     {req, res} - Request & Response
  * @access    Public
  */
-const discover: RequestHandler = (req, res) => {
+router.get('/', (req, res) => {
   const queryObject = url.parse(req.url, true).query;
-  res.send({ testing: 'testing..' });
-};
+  res.send({ testing: 'this is a test' });
+});
 
-export default discover;
+export default router;

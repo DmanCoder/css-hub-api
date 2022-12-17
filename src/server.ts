@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import root from './routes/root';
+
+// Routes
+import discover from './routes/api/discover';
 
 const app = express();
 
@@ -9,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Define routes
-app.use('/api/discover', root);
+app.use('/api/discover', discover);
 
 const PORT = process.env.PORT || 5000;
 
