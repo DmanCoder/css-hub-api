@@ -1,9 +1,8 @@
-import app from './app.js';
-import config from './config.js';
+import express from 'express';
+const app = express();
 
-app.listen(config.port, () => {
-  console.log(`🚀 ${config.name} ${config.version} 🚀`);
-  console.log(
-    `🚀 Listening on ${config.port} with NODE_ENV=${config.nodeEnv} 🚀`
-  );
+app.get('/', function (req, res) {
+  res.send('Hello World');
 });
+
+app.listen(5000);
