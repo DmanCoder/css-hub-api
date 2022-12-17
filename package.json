@@ -2,9 +2,10 @@
   "name": "css-hub-api",
   "version": "1.0.0",
   "description": "This is a api pass through to The Movie Data Base",
-  "main": "index.js",
+  "main": "server.js",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "helmet": "^5.1.1"
   },
@@ -16,8 +17,8 @@
     "typescript": "^4.9.4"
   },
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts",
     "build": "tsc",
     "reinstall": "rm -rf node_modules && npm install"
   },
