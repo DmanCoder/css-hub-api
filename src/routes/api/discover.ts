@@ -12,7 +12,7 @@ const router = express.Router();
  */
 router.get('/', (req, res) => {
   const queryObject = url.parse(req.url, true).query;
-  res.send({ testing: 'this is a test' });
+  res.send({ testing: 'Ravamp' });
 });
 
 export default router;
