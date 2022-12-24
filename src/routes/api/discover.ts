@@ -3,7 +3,6 @@ import url from 'url';
 
 // Axios init
 import { dbAPI } from '../../axios/init';
-import { MEDIA_TYPE_MOVIE } from '../../constants/index';
 
 // Utilities
 import utils from '../../utils';
