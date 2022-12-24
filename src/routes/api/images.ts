@@ -15,17 +15,17 @@ const router = express.Router();
 /**
  * This API makes a request to TMDb API and returns the request
  * for the client to consume. In this case, this route will return
- * all media for both movie & tv types.
+ * poster images for each episode for the specified season
  *
  * ROUTE - GET /api/discover/movies || /api/discover/tv
  */
-router.get('/', (req, res) => {
-  const { media_type, ...restOfQueryObj } = url.parse(req.url, true).query; // Query params provided by frontend
+router.get('/tv/season/poster_image_per_episode', (req, res) => {
+  const { media_id, season_number, ...restOfQueryObj } = url.parse(req.url, true).query; // Query params provided by frontend
   const params = utils.convertQueryObjectToParams(restOfQueryObj);
-  const endPoint = `/discover/${media_type}?api_key=${process.env.THE_MOVIE_DATABASE_API}${params}`;
+  const endPoint = `/tv/${media_id}/season/${season_number}?api_key=${process.env.THE_MOVIE_DATABASE_API}${params}`;
 
   // Reject if expected params are not present
-  const { errors, isValid } = validate.discover({ ...restOfQueryObj, media_type });
+  const { errors, isValid } = validate.images({ ...restOfQueryObj, media_id, season_number });
   if (!isValid) {
     res.status(400);
     return res.send({ errors });
@@ -34,19 +34,11 @@ router.get('/', (req, res) => {
   dbAPI
     .get(endPoint)
     .then((response) => {
-      const { results } = response.data;
-      const meediaWithAppendedType = results.map((media) => ({
-        ...media,
-        appended_media_type: media_type,
-      }));
-
-      const shuffled = utils.shuffle(meediaWithAppendedType);
-
-      return res.send({ results: shuffled });
+      const { data } = response;
+      return res.send({ results: data });
     })
     .catch((err) => {
       res.status(500);
-      console.log(err);
       res.send({ errors: { message: 'Issues Fetching results', err } });
     });
 });

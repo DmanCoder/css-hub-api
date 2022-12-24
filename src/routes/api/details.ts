@@ -5,16 +5,16 @@ import url from 'url';
 import { dbAPI } from '../../axios/init';
 
 // Utilities
-import utils from '../../utils/index';
+import utils from '../../utils';
 
 // Validate
-import validate from '../../validations/index';
+import validate from '../../validations';
 
 const router = express.Router();
 
 /**
  * This API makes a request to TMDb API and returns the request
- * for the client to consume. In this case it, this route will return
+ * for the client to consume. In this case, this route will return
  * details of a media, provided that `media_id` is given.
  *
  * ROUTE - GET /api/details

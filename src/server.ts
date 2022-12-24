@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-
 // Routes
 import discover from './routes/api/discover';
 import details from './routes/api/details';
+import images from './routes/api/images';
 
 const app = express();
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(cors());
 // Define routes
 app.use('/api/discover', discover);
 app.use('/api/details', details);
+app.use('/api/images', images);
 
 const PORT = process.env.PORT || 5000;
 
