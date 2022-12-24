@@ -17,21 +17,21 @@ const router = express.Router();
  *
  * ROUTE - GET /api/discover/movies
  */
-router.get('/movies', (req, res) => {
-  const queryObj = url.parse(req.url, true).query; // Query params provided by frontend
-  const params = utils.convertQueryObjectToParams(queryObj);
-  const movieEndPoint = `/discover/movie?api_key=${process.env.THE_MOVIE_DATABASE_API}${params}`;
+router.get('/', (req, res) => {
+  const { media_type, ...restOfParams } = url.parse(req.url, true).query; // Query params provided by frontend
+  const params = utils.convertQueryObjectToParams(restOfParams);
+  const endPoint = `/discover/${media_type}?api_key=${process.env.THE_MOVIE_DATABASE_API}${params}`;
 
   dbAPI
-    .get(movieEndPoint)
+    .get(endPoint)
     .then((response) => {
       const { results } = response.data;
-      const movieMediaWithAppendedType = results.map((media) => ({
+      const meediaWithAppendedType = results.map((media) => ({
         ...media,
-        appended_media_type: MEDIA_TYPE_MOVIE,
+        appended_media_type: media_type,
       }));
 
-      const shuffled = utils.shuffle(movieMediaWithAppendedType);
+      const shuffled = utils.shuffle(meediaWithAppendedType);
 
       return res.send({ results: shuffled });
     })
