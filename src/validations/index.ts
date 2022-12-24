@@ -1,3 +1,4 @@
 import discover from './validateDiscover';
+import details from './validateDetails';
 
-export default { discover };
+export default { discover, details };
