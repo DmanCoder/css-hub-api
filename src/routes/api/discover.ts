@@ -7,19 +7,29 @@ import { dbAPI } from '../../axios/init';
 // Utilities
 import utils from '../../utils';
 
+// Validate
+import validate from '../../validations';
+
 const router = express.Router();
 
 /**
  * This API makes a request to TMDb API and returns the request
  * for the client to consume. In this case it, this route will return
- * all media that is a movie type.
+ * all media for both movie & tv types.
  *
- * ROUTE - GET /api/discover/movies
+ * ROUTE - GET /api/discover/movies || /api/discover/tv
  */
 router.get('/', (req, res) => {
-  const { media_type, ...restOfParams } = url.parse(req.url, true).query; // Query params provided by frontend
-  const params = utils.convertQueryObjectToParams(restOfParams);
+  const { media_type, ...restOfQueryObj } = url.parse(req.url, true).query; // Query params provided by frontend
+  const params = utils.convertQueryObjectToParams(restOfQueryObj);
   const endPoint = `/discover/${media_type}?api_key=${process.env.THE_MOVIE_DATABASE_API}${params}`;
+
+  // Reject if expected params are not present
+  const { errors, isValid } = validate.discover({ ...restOfQueryObj, media_type });
+  if (!isValid) {
+    res.status(400);
+    return res.send({ errors });
+  }
 
   dbAPI
     .get(endPoint)
@@ -36,6 +46,7 @@ router.get('/', (req, res) => {
     })
     .catch((err) => {
       res.status(500);
+      console.log(err);
       res.send({ errors: { message: 'Issues Fetching results', err } });
     });
 });
