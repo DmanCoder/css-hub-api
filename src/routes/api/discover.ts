@@ -20,12 +20,12 @@ const router = express.Router();
  * ROUTE - GET /api/discover/movies || /api/discover/tv
  */
 router.get('/', (req, res) => {
-  const { media_type, ...restOfQueryObj } = url.parse(req.url, true).query; // Query params provided by frontend
-  const params = utils.convertQueryObjectToParams(restOfQueryObj);
-  const endPoint = `/discover/${media_type}?api_key=${process.env.THE_MOVIE_DATABASE_API}${params}`;
+  const queryObj = url.parse(req.url, true).query; // Query params provided by frontend
+  const params = utils.convertQueryObjectToParams(queryObj);
+  const endPoint = `/discover/${queryObj.media_type}?api_key=${process.env.THE_MOVIE_DATABASE_API}${params}`;
 
   // Reject if expected params are not present
-  const { errors, isValid } = validate.discover({ ...restOfQueryObj, media_type });
+  const { errors, isValid } = validate.discover({ ...queryObj });
   if (!isValid) {
     res.status(400);
     return res.send({ errors });
@@ -37,7 +37,7 @@ router.get('/', (req, res) => {
       const { results } = response.data;
       const meediaWithAppendedType = results.map((media) => ({
         ...media,
-        appended_media_type: media_type,
+        appended_media_type: queryObj.media_type,
       }));
 
       const shuffled = utils.shuffle(meediaWithAppendedType);
@@ -46,7 +46,6 @@ router.get('/', (req, res) => {
     })
     .catch((err) => {
       res.status(500);
-      console.log(err);
       res.send({ errors: { message: 'Issues Fetching results', err } });
     });
 });
