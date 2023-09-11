@@ -22,7 +22,8 @@ const router = express.Router();
 router.get('/', (req, res) => {
   const queryObj = url.parse(req.url, true).query; // Query params provided by frontend
   const params = utils.convertQueryObjectToParams(queryObj);
-  const endPoint = `/discover/${queryObj.media_type}?api_key=${process.env.THE_MOVIE_DATABASE_API}${params}`;
+  // const endPoint = `/discover/${queryObj.media_type}?api_key=${process.env.THE_MOVIE_DATABASE_API}${params}`;
+  const endPoint = `/discover/tv?api_key=${process.env.THE_MOVIE_DATABASE_API}${params}`;
 
   // Reject if expected params are not present
   const { errors, isValid } = validate.discover({ ...queryObj });

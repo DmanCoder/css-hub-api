@@ -13,7 +13,7 @@ const validateDetails = (data) => {
   if (utils.isEmpty(data.media_type)) {
     errors.media_type = '`media_type` is empty or has not been passed in as a query param';
   } else {
-    if (data.media_type !== 'movie' && data.media_type !== 'tv') {
+    if (data.media_type !== 'movie' && data.media_type !== 'tv' && data.media_type !== 'both') {
       errors.media_type = '`media_type` only accepts value of `movie`, `tv` or `both`';
     }
   }
@@ -23,6 +23,8 @@ const validateDetails = (data) => {
   }
 
   // return errors
+  console.log(errors, 'errors validateDetails')
+
   return {
     errors,
     isValid: utils.isEmpty(errors),

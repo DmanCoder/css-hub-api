@@ -4,6 +4,7 @@ type ErrorsType = { media_id: string; season_number: string };
 
 const validateImages = (data) => {
   const errors = {} as ErrorsType;
+  console.log(data, 'validateImages')
 
   // Check if expected params has been passed in
   data.media_id = !utils.isEmpty(data.media_id) ? data.media_id : '';

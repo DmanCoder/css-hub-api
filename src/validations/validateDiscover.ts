@@ -18,6 +18,8 @@ const validateDiscover = (data) => {
   }
 
   // return errors
+  console.log(errors, 'errors')
+
   return {
     errors,
     isValid: utils.isEmpty(errors),

@@ -20,6 +20,6 @@ app.use('/api/discover', discover);
 app.use('/api/details', details);
 app.use('/api/images', images);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => console.log(`Server on port ${PORT}`));
